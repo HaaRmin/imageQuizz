@@ -197,7 +197,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.2);
             color: white;
             padding: 30px 50px;
             border-radius: 20px;
@@ -206,7 +206,7 @@
             text-align: center;
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
-            backdrop-filter: blur(5px);
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.9);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
         }
 
@@ -298,7 +298,7 @@
 
             <div class="form-group">
                 <label>Image URL:</label>
-                <input type="text" id="imageUrl" placeholder="https://www.heychina.com.au/wp-content/uploads/2019/11/how-to-make-chinese-tea.jpg" value="https://www.heychina.com.au/wp-content/uploads/2019/11/how-to-make-chinese-tea.jpg">
+                <input type="text" id="imageUrl" placeholder="https://example.com/image.jpg" value="https://images.unsplash.com/photo-1470058869958-2a77ade41c02?w=800">
             </div>
 
             <div class="form-group">
@@ -308,12 +308,12 @@
 
             <div class="form-group">
                 <label>Logo Image URL:</label>
-                <input type="text" id="logoUrl" placeholder="https://raw.githubusercontent.com/HaaRmin/chieseQuizz/refs/heads/main/logo.jpg" value="https://raw.githubusercontent.com/HaaRmin/chieseQuizz/refs/heads/main/logo.jpg">
+                <input type="text" id="logoUrl" placeholder="https://example.com/logo.jpg" value="">
             </div>
 
             <div class="form-group">
                 <label>Background Image URL:</label>
-                <input type="text" id="bgImageUrl" placeholder="https://raw.githubusercontent.com/HaaRmin/chieseQuizz/refs/heads/main/background.jpg" value="https://raw.githubusercontent.com/HaaRmin/chieseQuizz/refs/heads/main/background.jpg">
+                <input type="text" id="bgImageUrl" placeholder="https://example.com/background.jpg" value="https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=1200">
             </div>
 
             <button class="launch-btn" onclick="launchQuiz()">Launch Quiz</button>
