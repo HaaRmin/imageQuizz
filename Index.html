@@ -33,6 +33,8 @@
             max-width: 600px;
             width: 100%;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .config-container h1 {
@@ -73,6 +75,20 @@
         .form-group textarea {
             resize: vertical;
             min-height: 80px;
+        }
+
+        .quiz-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .quiz-item h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 18px;
         }
 
         .launch-btn {
@@ -205,13 +221,16 @@
             font-weight: bold;
             text-align: center;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            visibility: hidden;
+            transition: opacity 0.5s ease-in-out, visibility 0s linear 0.5s;
             text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.9);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
         }
 
         .answer-overlay.show {
             opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease-in-out, visibility 0s linear 0s;
         }
 
         .footer-container {
@@ -296,24 +315,74 @@
                 <textarea id="questionInput" placeholder="Enter your question here...">What is the Chinese name of this item?</textarea>
             </div>
 
-            <div class="form-group">
-                <label>Image URL:</label>
-                <input type="text" id="imageUrl" placeholder="https://example.com/image.jpg" value="https://images.unsplash.com/photo-1470058869958-2a77ade41c02?w=800">
+            <div class="quiz-item">
+                <h3>Image 1</h3>
+                <div class="form-group">
+                    <label>Image URL:</label>
+                    <input type="text" id="imageUrl1" placeholder="https://example.com/image1.jpg" value="https://images.unsplash.com/photo-1470058869958-2a77ade41c02?w=800">
+                </div>
+                <div class="form-group">
+                    <label>Answer:</label>
+                    <input type="text" id="answer1" placeholder="Enter the answer..." value="茶 (chá) - Tea">
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>Answer:</label>
-                <input type="text" id="answerInput" placeholder="Enter the answer..." value="茶 (chá) - Tea">
+            <div class="quiz-item">
+                <h3>Image 2</h3>
+                <div class="form-group">
+                    <label>Image URL:</label>
+                    <input type="text" id="imageUrl2" placeholder="https://example.com/image2.jpg" value="https://images.unsplash.com/photo-1568096889942-6eedde686635?w=800">
+                </div>
+                <div class="form-group">
+                    <label>Answer:</label>
+                    <input type="text" id="answer2" placeholder="Enter the answer..." value="米饭 (mǐfàn) - Rice">
+                </div>
+            </div>
+
+            <div class="quiz-item">
+                <h3>Image 3</h3>
+                <div class="form-group">
+                    <label>Image URL:</label>
+                    <input type="text" id="imageUrl3" placeholder="https://example.com/image3.jpg" value="https://images.unsplash.com/photo-1604467707321-70d5ac45adda?w=800">
+                </div>
+                <div class="form-group">
+                    <label>Answer:</label>
+                    <input type="text" id="answer3" placeholder="Enter the answer..." value="水 (shuǐ) - Water">
+                </div>
+            </div>
+
+            <div class="quiz-item">
+                <h3>Image 4</h3>
+                <div class="form-group">
+                    <label>Image URL:</label>
+                    <input type="text" id="imageUrl4" placeholder="https://example.com/image4.jpg" value="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800">
+                </div>
+                <div class="form-group">
+                    <label>Answer:</label>
+                    <input type="text" id="answer4" placeholder="Enter the answer..." value="面包 (miànbāo) - Bread">
+                </div>
+            </div>
+
+            <div class="quiz-item">
+                <h3>Image 5</h3>
+                <div class="form-group">
+                    <label>Image URL:</label>
+                    <input type="text" id="imageUrl5" placeholder="https://example.com/image5.jpg" value="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800">
+                </div>
+                <div class="form-group">
+                    <label>Answer:</label>
+                    <input type="text" id="answer5" placeholder="Enter the answer..." value="沙拉 (shālā) - Salad">
+                </div>
             </div>
 
             <div class="form-group">
                 <label>Logo Image URL:</label>
-                <input type="text" id="logoUrl" placeholder="https://example.com/logo.jpg" value="">
+                <input type="text" id="logoUrl" placeholder="https://raw.githubusercontent.com/HaaRmin/imageQuizz/refs/heads/main/logo.jpg" value="https://raw.githubusercontent.com/HaaRmin/imageQuizz/refs/heads/main/logo.jpg">
             </div>
 
             <div class="form-group">
                 <label>Background Image URL:</label>
-                <input type="text" id="bgImageUrl" placeholder="https://example.com/background.jpg" value="https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=1200">
+                <input type="text" id="bgImageUrl" placeholder="https://raw.githubusercontent.com/HaaRmin/imageQuizz/refs/heads/main/background.jpg" value="https://raw.githubusercontent.com/HaaRmin/imageQuizz/refs/heads/main/background.jpg">
             </div>
 
             <button class="launch-btn" onclick="launchQuiz()">Launch Quiz</button>
@@ -349,25 +418,39 @@
 
     <script>
         let countdown;
+        let quizData = [];
+        let currentQuizIndex = 0;
 
         function launchQuiz() {
             // Get values from config
             const question = document.getElementById('questionInput').value;
-            const imageUrl = document.getElementById('imageUrl').value;
-            const answer = document.getElementById('answerInput').value;
             const bgImage = document.getElementById('bgImageUrl').value;
             const logoUrl = document.getElementById('logoUrl').value;
 
+            // Collect all quiz items
+            quizData = [];
+            for (let i = 1; i <= 5; i++) {
+                const imageUrl = document.getElementById(`imageUrl${i}`).value;
+                const answer = document.getElementById(`answer${i}`).value;
+                
+                if (imageUrl && answer) {
+                    quizData.push({ imageUrl, answer });
+                }
+            }
+
             // Validate inputs
-            if (!question || !imageUrl || !answer) {
-                alert('Please fill in all required fields (question, image URL, and answer)!');
+            if (!question) {
+                alert('Please enter a question!');
                 return;
             }
 
-            // Set quiz content
+            if (quizData.length === 0) {
+                alert('Please fill in at least one image URL and answer!');
+                return;
+            }
+
+            // Set question
             document.getElementById('questionDisplay').textContent = question;
-            document.getElementById('quizImage').src = imageUrl;
-            document.getElementById('answerOverlay').textContent = answer;
 
             // Set logo
             if (logoUrl) {
@@ -385,16 +468,38 @@
                 quizPage.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
             }
 
-            // Reset answer overlay and footer
-            document.getElementById('answerOverlay').classList.remove('show');
-            document.getElementById('footerContainer').classList.remove('show');
-
             // Switch pages
             document.getElementById('configPage').style.display = 'none';
             quizPage.style.display = 'block';
 
-            // Start countdown
-            startCountdown();
+            // Start with first quiz
+            currentQuizIndex = 0;
+            startNextQuiz();
+        }
+
+        function startNextQuiz() {
+            if (currentQuizIndex >= quizData.length) {
+                // All quizzes done
+                return;
+            }
+
+            // Get current quiz data
+            const currentQuiz = quizData[currentQuizIndex];
+
+            // IMPORTANT: Hide answer overlay completely first
+            const answerOverlay = document.getElementById('answerOverlay');
+            answerOverlay.classList.remove('show');
+            document.getElementById('footerContainer').classList.remove('show');
+
+            // Wait for the transition to complete before changing content
+            setTimeout(() => {
+                // Now it's safe to change the text content (it's invisible)
+                answerOverlay.textContent = currentQuiz.answer;
+                document.getElementById('quizImage').src = currentQuiz.imageUrl;
+
+                // Start countdown
+                startCountdown();
+            }, 600);
         }
 
         function startCountdown() {
@@ -417,8 +522,16 @@
             // Show answer overlay on image
             document.getElementById('answerOverlay').classList.add('show');
             
-            // Show footer with follow message and logo
-            document.getElementById('footerContainer').classList.add('show');
+            // Show footer only on last quiz
+            if (currentQuizIndex === quizData.length - 1) {
+                document.getElementById('footerContainer').classList.add('show');
+            }
+
+            // Wait 2.6 seconds (2 seconds visible + 0.6 for transition) then move to next quiz
+            setTimeout(() => {
+                currentQuizIndex++;
+                startNextQuiz();
+            }, 2600);
         }
     </script>
 </body>
