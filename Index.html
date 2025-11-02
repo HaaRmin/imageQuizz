@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chinese Image Quiz App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* Configuration Page Styles */
+        .config-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .config-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .config-container h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .launch-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .launch-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .launch-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Quiz Page Styles */
+        .quiz-page {
+            display: none;
+            min-height: 100vh;
+            background-size: cover;
+            background-position: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .quiz-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+
+        .quiz-container {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+            margin: 0 auto;
+            padding-top: 60px;
+        }
+
+        .timer-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 3;
+        }
+
+        .timer {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: #333;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .question-box {
+            background: rgba(255, 107, 107, 0.85);
+            border-radius: 30px;
+            padding: 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        /* Speech bubble arrow pointing down */
+        .question-box::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 25px solid rgba(255, 107, 107, 0.85);
+        }
+
+        .question-text {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .image-container {
+            margin-top: 40px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .quiz-image {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            opacity: 0.85;
+        }
+
+        .answer-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 30px 50px;
+            border-radius: 20px;
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .answer-overlay.show {
+            opacity: 1;
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .footer-container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .follow-message {
+            flex: 1;
+            text-align: left;
+            color: white;
+            font-size: 26px;
+            font-weight: bold;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+        }
+
+        .logo-container {
+            flex-shrink: 0;
+        }
+
+        .logo-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            opacity: 0.85;
+        }
+
+        @media (max-width: 768px) {
+            .config-container {
+                padding: 30px 20px;
+            }
+
+            .timer {
+                width: 80px;
+                height: 80px;
+                font-size: 36px;
+            }
+
+            .question-text {
+                font-size: 22px;
+            }
+
+            .quiz-image {
+                height: 350px;
+            }
+
+            .answer-overlay {
+                font-size: 28px;
+                padding: 25px 40px;
+            }
+
+            .follow-message {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Configuration Page -->
+    <div class="config-page" id="configPage">
+        <div class="config-container">
+            <h1>🖼️ Image Quiz Configuration</h1>
+            
+            <div class="form-group">
+                <label>Question:</label>
+                <textarea id="questionInput" placeholder="Enter your question here...">What is the Chinese name of this item?</textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Image URL:</label>
+                <input type="text" id="imageUrl" placeholder="https://www.heychina.com.au/wp-content/uploads/2019/11/how-to-make-chinese-tea.jpg" value="https://www.heychina.com.au/wp-content/uploads/2019/11/how-to-make-chinese-tea.jpg">
+            </div>
+
+            <div class="form-group">
+                <label>Answer:</label>
+                <input type="text" id="answerInput" placeholder="Enter the answer..." value="茶 (chá) - Tea">
+            </div>
+
+            <div class="form-group">
+                <label>Logo Image URL:</label>
+                <input type="text" id="logoUrl" placeholder="https://raw.githubusercontent.com/HaaRmin/chieseQuizz/refs/heads/main/logo.jpg" value="https://raw.githubusercontent.com/HaaRmin/chieseQuizz/refs/heads/main/logo.jpg">
+            </div>
+
+            <div class="form-group">
+                <label>Background Image URL:</label>
+                <input type="text" id="bgImageUrl" placeholder="https://raw.githubusercontent.com/HaaRmin/chieseQuizz/refs/heads/main/background.jpg" value="https://raw.githubusercontent.com/HaaRmin/chieseQuizz/refs/heads/main/background.jpg">
+            </div>
+
+            <button class="launch-btn" onclick="launchQuiz()">Launch Quiz</button>
+        </div>
+    </div>
+
+    <!-- Quiz Page -->
+    <div class="quiz-page" id="quizPage">
+        <div class="timer-container">
+            <div class="timer" id="timer">5</div>
+        </div>
+
+        <div class="quiz-container">
+            <div class="question-box">
+                <div class="question-text" id="questionDisplay"></div>
+            </div>
+
+            <div class="image-container">
+                <img src="" alt="Quiz Image" class="quiz-image" id="quizImage">
+                <div class="answer-overlay" id="answerOverlay"></div>
+            </div>
+
+            <div class="footer-container" id="footerContainer">
+                <div class="follow-message">
+                    Follow me for more Chinese quizzes! 🎯
+                </div>
+                <div class="logo-container">
+                    <img src="" alt="Logo" class="logo-image" id="logoImage">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let countdown;
+
+        function launchQuiz() {
+            // Get values from config
+            const question = document.getElementById('questionInput').value;
+            const imageUrl = document.getElementById('imageUrl').value;
+            const answer = document.getElementById('answerInput').value;
+            const bgImage = document.getElementById('bgImageUrl').value;
+            const logoUrl = document.getElementById('logoUrl').value;
+
+            // Validate inputs
+            if (!question || !imageUrl || !answer) {
+                alert('Please fill in all required fields (question, image URL, and answer)!');
+                return;
+            }
+
+            // Set quiz content
+            document.getElementById('questionDisplay').textContent = question;
+            document.getElementById('quizImage').src = imageUrl;
+            document.getElementById('answerOverlay').textContent = answer;
+
+            // Set logo
+            if (logoUrl) {
+                document.getElementById('logoImage').src = logoUrl;
+                document.querySelector('.logo-container').style.display = 'block';
+            } else {
+                document.querySelector('.logo-container').style.display = 'none';
+            }
+
+            // Set background
+            const quizPage = document.getElementById('quizPage');
+            if (bgImage) {
+                quizPage.style.backgroundImage = `url('${bgImage}')`;
+            } else {
+                quizPage.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            }
+
+            // Reset answer overlay and footer
+            document.getElementById('answerOverlay').classList.remove('show');
+            document.getElementById('footerContainer').classList.remove('show');
+
+            // Switch pages
+            document.getElementById('configPage').style.display = 'none';
+            quizPage.style.display = 'block';
+
+            // Start countdown
+            startCountdown();
+        }
+
+        function startCountdown() {
+            let timeLeft = 5;
+            const timerDisplay = document.getElementById('timer');
+            timerDisplay.textContent = timeLeft;
+
+            countdown = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    revealAnswer();
+                }
+            }, 1000);
+        }
+
+        function revealAnswer() {
+            // Show answer overlay on image
+            document.getElementById('answerOverlay').classList.add('show');
+            
+            // Show footer with follow message and logo
+            document.getElementById('footerContainer').classList.add('show');
+        }
+    </script>
+</body>
+</html>
