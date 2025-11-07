@@ -193,6 +193,20 @@
             line-height: 1.4;
         }
 
+        .english-name {
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .image-container {
             margin-top: 40px;
             margin-bottom: 40px;
@@ -289,6 +303,12 @@
                 font-size: 22px;
             }
 
+            .english-name {
+                font-size: 24px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
             .quiz-image {
                 height: 350px;
             }
@@ -322,6 +342,10 @@
                     <input type="text" id="imageUrl1" placeholder="https://raw.githubusercontent.com/HaaRmin/imageQuizz/refs/heads/main/image1.jpg" value="https://raw.githubusercontent.com/HaaRmin/imageQuizz/refs/heads/main/image1.jpg">
                 </div>
                 <div class="form-group">
+                    <label>English Name:</label>
+                    <input type="text" id="englishName1" placeholder="Enter the English name..." value="Tea">
+                </div>
+                <div class="form-group">
                     <label>Answer:</label>
                     <input type="text" id="answer1" placeholder="Enter the answer..." value="茶 (chá) - Tea">
                 </div>
@@ -332,6 +356,10 @@
                 <div class="form-group">
                     <label>Image URL:</label>
                     <input type="text" id="imageUrl2" placeholder="https://raw.githubusercontent.com/HaaRmin/imageQuizz/refs/heads/main/image2.jpg" value="https://raw.githubusercontent.com/HaaRmin/imageQuizz/refs/heads/main/image2.jpg">
+                </div>
+                <div class="form-group">
+                    <label>English Name:</label>
+                    <input type="text" id="englishName2" placeholder="Enter the English name..." value="Rice">
                 </div>
                 <div class="form-group">
                     <label>Answer:</label>
@@ -346,6 +374,10 @@
                     <input type="text" id="imageUrl3" placeholder="https://raw.githubusercontent.com/HaaRmin/imageQuizz/refs/heads/main/image3.jpg" value="https://raw.githubusercontent.com/HaaRmin/imageQuizz/refs/heads/main/image3.jpg">
                 </div>
                 <div class="form-group">
+                    <label>English Name:</label>
+                    <input type="text" id="englishName3" placeholder="Enter the English name..." value="Water">
+                </div>
+                <div class="form-group">
                     <label>Answer:</label>
                     <input type="text" id="answer3" placeholder="Enter the answer..." value="水 (shuǐ) - Water">
                 </div>
@@ -358,6 +390,10 @@
                     <input type="text" id="imageUrl4" placeholder="https://raw.githubusercontent.com/HaaRmin/imageQuizz/refs/heads/main/image4.jpg" value="https://raw.githubusercontent.com/HaaRmin/imageQuizz/refs/heads/main/image4.jpg">
                 </div>
                 <div class="form-group">
+                    <label>English Name:</label>
+                    <input type="text" id="englishName4" placeholder="Enter the English name..." value="Bread">
+                </div>
+                <div class="form-group">
                     <label>Answer:</label>
                     <input type="text" id="answer4" placeholder="Enter the answer..." value="面包 (miànbāo) - Bread">
                 </div>
@@ -368,6 +404,10 @@
                 <div class="form-group">
                     <label>Image URL:</label>
                     <input type="text" id="imageUrl5" placeholder="https://raw.githubusercontent.com/HaaRmin/imageQuizz/refs/heads/main/image5.jpg" value="https://raw.githubusercontent.com/HaaRmin/imageQuizz/refs/heads/main/image5.jpg">
+                </div>
+                <div class="form-group">
+                    <label>English Name:</label>
+                    <input type="text" id="englishName5" placeholder="Enter the English name..." value="Salad">
                 </div>
                 <div class="form-group">
                     <label>Answer:</label>
@@ -399,6 +439,8 @@
             <div class="question-box">
                 <div class="question-text" id="questionDisplay"></div>
             </div>
+
+            <div class="english-name" id="englishNameDisplay"></div>
 
             <div class="image-container">
                 <img src="" alt="Quiz Image" class="quiz-image" id="quizImage">
@@ -432,9 +474,10 @@
             for (let i = 1; i <= 5; i++) {
                 const imageUrl = document.getElementById(`imageUrl${i}`).value;
                 const answer = document.getElementById(`answer${i}`).value;
+                const englishName = document.getElementById(`englishName${i}`).value;
                 
                 if (imageUrl && answer) {
-                    quizData.push({ imageUrl, answer });
+                    quizData.push({ imageUrl, answer, englishName });
                 }
             }
 
@@ -496,6 +539,24 @@
                 // Now it's safe to change the text content (it's invisible)
                 answerOverlay.textContent = currentQuiz.answer;
                 document.getElementById('quizImage').src = currentQuiz.imageUrl;
+                
+                // Display English name
+                const englishNameDisplay = document.getElementById('englishNameDisplay');
+                const englishName = currentQuiz.englishName || '';
+                englishNameDisplay.textContent = englishName;
+                
+                // Adjust question-box padding dynamically based on English name length
+                const questionBox = document.querySelector('.question-box');
+                if (englishName && englishName.length > 0) {
+                    // If English name is present, reduce padding to make room
+                    // Keep top position intact by maintaining top padding, reduce bottom padding
+                    questionBox.style.paddingTop = '30px';
+                    questionBox.style.paddingBottom = '25px';
+                } else {
+                    // Reset to default padding if no English name
+                    questionBox.style.paddingTop = '40px';
+                    questionBox.style.paddingBottom = '40px';
+                }
 
                 // Start countdown
                 startCountdown();
